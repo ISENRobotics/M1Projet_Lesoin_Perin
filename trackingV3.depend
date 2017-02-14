@@ -1,0 +1,49 @@
+# depslib dependency file v1.0
+1486651936 source:/home/isen/Documents/projet/tracking/Webcam.cpp
+	"commun.h"
+
+1486655546 /home/isen/Documents/projet/tracking/commun.h
+	<stdio.h>
+	<iostream>
+	<opencv/cv.h>
+	"opencv/highgui.h"
+	"Webcam.h"
+	"TraitementImg.h"
+	"getObjectColor.cpp"
+
+1486656472 /home/isen/Documents/projet/tracking/Webcam.h
+
+1486649299 source:/home/isen/Documents/projet/tracking/main.cpp
+	"commun.h"
+
+1485184340 source:/home/isen/Documents/projet/tracking/src/binarisation.cpp
+	"commun.h"
+
+1485186909 /home/isen/Documents/projet/tracking/Binarisation.h
+
+1485185902 source:/home/isen/Documents/projet/tracking/Binarisation.cpp
+	"commun.h"
+
+1486044481 /home/isen/Documents/projet/tracking/TraitementImg.h
+
+1486044689 source:/home/isen/Documents/projet/tracking/TraitementImg.cpp
+	"commun.h"
+
+1486041615 /home/isen/Documents/projet/tracking/getObjectColor.cpp
+	"commun.h"
+
+1487067348 source:/home/isen/Documents/projet/trackingV3/Webcam.cpp
+	"commun.h"
+
+1487062002 /home/isen/Documents/projet/trackingV3/commun.h
+	<stdio.h>
+	<iostream>
+	<opencv/cv.h>
+	"opencv/highgui.h"
+	"Webcam.h"
+
+1487067178 /home/isen/Documents/projet/trackingV3/Webcam.h
+
+1487067317 source:/home/isen/Documents/projet/trackingV3/main.cpp
+	"commun.h"
+
