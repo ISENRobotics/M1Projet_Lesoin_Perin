@@ -1,1 +1,1 @@
-void init(int *device_type);
+missile_usb * init(int *device_type);

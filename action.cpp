@@ -1,30 +1,17 @@
-#include "traitement.h"
-#ifndef DEPEND
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/io.h>
-#include <errno.h>
-#include <linux/input.h>
-#endif
-#include "InputEvent.h"
-#include "USBMissileLauncher.h"
-#include "traitement.h"
-#include "action.h"
+#include "commun.h"
 
-#define USB_TIMEOUT 1000 /* milliseconds */
 
-missile_usb *control;
+//---------------------------------------------------------------------------
 
-  //---------------------------------------------------------------------------
-
-void action(int p_commande){
+void action(missile_usb * control_action, int p_commande, int p_delay){
 
   unsigned int set_fire = 0, set_left = 0, set_right = 0;
   unsigned int set_up = 0, set_down = 0, set_stop = 0;
 
-  int delay = 0; // butée = 3.5 s
+  int delay = p_delay; // butée = 3.5 s
+
+
+    cout << "action" << endl;
 
   //---------------------------------------------------------------------------
 
@@ -46,7 +33,7 @@ void action(int p_commande){
 	}
 	else if(p_commande == 3){
 		set_left = 1;
-		fprintf(stderr,"tour\n");
+		//fprintf(stderr,"tour\n");
 		set_down = 1;
 		//set_stop = 1;
 	}
@@ -78,11 +65,11 @@ void action(int p_commande){
     if (set_fire)
       msg |= MISSILE_LAUNCHER_CMD_FIRE;
 
-    missile_do(control, msg, /*device_type*/DEVICE_TYPE_MISSILE_LAUNCHER);
+    missile_do(control_action, msg, /*device_type*/DEVICE_TYPE_MISSILE_LAUNCHER);
 
     if (set_stop) {
-      usleep(delay * 1000);
-      missile_do(control, MISSILE_LAUNCHER_CMD_STOP, DEVICE_TYPE_MISSILE_LAUNCHER);
+      usleep(delay * 10);
+      missile_do(control_action, MISSILE_LAUNCHER_CMD_STOP, DEVICE_TYPE_MISSILE_LAUNCHER);
     }
 
 }

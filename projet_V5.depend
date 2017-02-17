@@ -1,0 +1,70 @@
+# depslib dependency file v1.0
+1487332418 source:/home/isen/Documents/projet/projet_V5/Webcam.cpp
+	"commun.h"
+
+1487321827 /home/isen/Documents/projet/projet_V5/commun.h
+	<stdio.h>
+	<iostream>
+	<opencv/cv.h>
+	"opencv/highgui.h"
+	"Webcam.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<sys/io.h>
+	<errno.h>
+	<linux/input.h>
+	<sys/ioctl.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<asm/types.h>
+	<fcntl.h>
+	<stdint.h>
+	<math.h>
+	"InputEvent.h"
+	"USBMissileLauncher.h"
+	"traitement.h"
+	"action.h"
+	"initialisation.h"
+
+1487067178 /home/isen/Documents/projet/projet_V5/Webcam.h
+
+1487331664 source:/home/isen/Documents/projet/projet_V5/main.cpp
+	"commun.h"
+
+1487239763 source:/home/isen/Documents/projet/projet_V5/InputEvent.cpp
+	"commun.h"
+
+1487026200 /home/isen/Documents/projet/projet_V5/InputEvent.h
+
+1487327679 source:/home/isen/Documents/projet/projet_V5/USBMissileLauncher.cpp
+	"commun.h"
+
+1487321911 /home/isen/Documents/projet/projet_V5/USBMissileLauncher.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<sys/io.h>
+	<assert.h>
+	<usb.h>
+	<errno.h>
+
+1487332252 source:/home/isen/Documents/projet/projet_V5/action.cpp
+	"commun.h"
+
+1487240902 /home/isen/Documents/projet/projet_V5/traitement.h
+
+1487330969 /home/isen/Documents/projet/projet_V5/action.h
+
+1487323956 source:/home/isen/Documents/projet/projet_V5/initialisation.cpp
+	"commun.h"
+
+1487322912 /home/isen/Documents/projet/projet_V5/initialisation.h
+
+1487331822 source:/home/isen/Documents/projet/projet_V5/traitement.cpp
+	"commun.h"
+
+1487239763 source:/home/isen/Documents/projet/projet_V5/USBMissileLauncherUtils.cpp
+

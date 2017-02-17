@@ -16,47 +16,29 @@
 #define USB_TIMEOUT 1000 /* milliseconds */
 
 missile_usb *control;
-
+/*
 int main() {
 
-	int Dx = 0;	// de 0 à 640 
-	int Dy = 0; // de 0 à 480 
-	
+	int Dx = 0;	// de 0 à 640
+	int Dy = 0; // de 0 à 480
+
+///////////
+
+
+
   int device_type = 1;
-  FILE* fichier = NULL;
-  
+
   init(&device_type);
-  
-  fichier = fopen("coordonnees.txt", "r+");
-  
-  if (fichier != NULL)
-    {
-        // On peut lire et écrire dans le fichier
-        // Boucle de lecture des caractères un à un
-        do
-        {
-            fscanf(fichier, "%d %d", &Dx, &Dy);
-  					fprintf(stderr,"x:%d y:%d \n",Dx,Dy);
-            traitement(Dx,Dy);
-            //usleep(500);
 
-        } while (Dx != EOF);
-        fclose(fichier);
-    }
-    else
-    {
-        // On affiche un message d'erreur si on veut
-        printf("Impossible d'ouvrir le fichier coordonnees.txt \n");
-    }
-    	
-  
-  //traitement(Dx,Dy);
+  traitement(Dx,Dy);
 
-  missile_usb_destroy(control);  
+  //action(&device_type,commande);
+
+  missile_usb_destroy(control);
 
   return 0;
 }
-
+*/
 //=============================================================================
 
 /*

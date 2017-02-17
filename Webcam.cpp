@@ -6,11 +6,11 @@ using namespace cv;
 Webcam::Webcam()
 {
 
-    h=240;
+    h=260;
     s=0;
     v=0;
     ds = 20;
-    dh = 50;
+    dh = 100;
     CvPoint positionObj = cvPoint(-1, -1);
 
 }
@@ -54,7 +54,7 @@ IplImage * Webcam :: binairisation (IplImage * fluxOriginal) {
         //création d'un masque pour isoler
         mask=cvCreateImage(cvGetSize(fluxOriginal), fluxOriginal-> depth, 1);
 
-        cout <<"ici" << endl;
+
          // conversion du flux RGB en HSV pour travailler sur la saturation et éviter les problèmes du à la brillance de l'image
         hsv=cvCloneImage(fluxOriginal);
         cvCvtColor(fluxOriginal, hsv, CV_BGR2HSV);

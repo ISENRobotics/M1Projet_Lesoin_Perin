@@ -27,22 +27,12 @@
  *   $Id$
  */
 
-#ifndef DEPEND
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/io.h>
-#include <assert.h>
-#include <usb.h>
-#include <errno.h>
-#endif
-#include "USBMissileLauncher.h"
+#include "commun.h"
 
 extern int debug_level;
 
 //=============================================================================
-
+/*
 struct missile_usb {
   struct usb_device *device;
   usb_dev_handle    *handle;
@@ -50,7 +40,7 @@ struct missile_usb {
   int                timeout;
   int                interface_claimed;
 };
-
+*/
 //=============================================================================
 
 int missile_usb_initialise(void) {
@@ -65,9 +55,11 @@ int missile_usb_initialise(void) {
 //=============================================================================
 
 missile_usb *missile_usb_create(int debug, int timeout) {
-  missile_usb *control = malloc(sizeof(*control));
-  if (control == NULL)
+  missile_usb * control = (missile_usb*)malloc(sizeof(missile_usb));
+  if (control == NULL) {
+    cout <<"echec : allocation de la mémoire pour control" << endl;
     return NULL;
+    }
 
   control->device            = NULL;
   control->handle            = NULL;
@@ -252,11 +244,13 @@ static int claim_interface(missile_usb *control) {
 
 //=============================================================================
 
-int missile_do(missile_usb *control, int cmd, int device_type) {
+int missile_do(missile_usb *control_do, int cmd, int device_type) {
 
   int a, b, c, d, e;
 
-
+    if (control_do==NULL) {
+        cout << "control_do = NULL" << endl;
+    }
 
 
   switch (device_type) {
@@ -264,14 +258,15 @@ int missile_do(missile_usb *control, int cmd, int device_type) {
   case DEVICE_TYPE_MISSILE_LAUNCHER:
 
     /* Two fixed-format initiator packets appear to be required */
+    cout << control_do -> timeout << " :   missile_do" <<endl;
 
-    if (missile_usb_sendcommand(control, 'U', 'S', 'B', 'C', 0, 0, 4, 0 )) {
+    if (missile_usb_sendcommand(control_do, 'U', 'S', 'B', 'C', 0, 0, 4, 0 )) {
       fprintf(stderr,
 	      "missile_usb_sendcommand() failed: %s\n", strerror(errno));
       return -1;
     }
 
-    if (missile_usb_sendcommand(control, 'U', 'S', 'B', 'C', 0, 64, 2, 0 )) {
+    if (missile_usb_sendcommand(control_do, 'U', 'S', 'B', 'C', 0, 64, 2, 0 )) {
       fprintf(stderr,
 	      "missile_usb_sendcommand() failed: %s\n", strerror(errno));
       return -1;
@@ -285,7 +280,7 @@ int missile_do(missile_usb *control, int cmd, int device_type) {
     d = cmd & MISSILE_LAUNCHER_CMD_DOWN ? 1 : 0;
     e = cmd & MISSILE_LAUNCHER_CMD_FIRE ? 1 : 0;
 
-    if (missile_usb_sendcommand64(control, 0, a, b, c, d, e, 8, 8 )) {
+    if (missile_usb_sendcommand64(control_do, 0, a, b, c, d, e, 8, 8 )) {
       fprintf(stderr,
 	      "missile_usb_sendcommand() failed: %s\n", strerror(errno));
       return -1;
@@ -295,7 +290,7 @@ int missile_do(missile_usb *control, int cmd, int device_type) {
 
   case DEVICE_TYPE_CIRCUS_CANNON:
 
-    if (missile_usb_sendcommand(control, cmd, 0, 0, 0, 0, 0, 0, 0)) {
+    if (missile_usb_sendcommand(control_do, cmd, 0, 0, 0, 0, 0, 0, 0)) {
       fprintf(stderr, "missile_usb_sendcommand() failed: %s\n",
 	      strerror(errno));
       return -1;
@@ -313,20 +308,28 @@ int missile_do(missile_usb *control, int cmd, int device_type) {
 
 //=============================================================================
 
-int missile_usb_sendcommand(missile_usb *control,
+int missile_usb_sendcommand(missile_usb *control_sendcmd,
 			    int a, int b, int c, int d,
 			    int e, int f, int g, int h) {
 
   unsigned char buf[8];
   int  ret;
 
-  assert(control != NULL);
+  assert(control_sendcmd != NULL);
 
-  ret = claim_interface(control);
+/* /!\/!\/!\/!\/!\/!\/!\      ICI      /!\/!\/!\/!\/!\/!\/!\/!\/!\ */
+
+  ret = claim_interface(control_sendcmd);
+
+  cout <<"ici ==" << control_sendcmd-> timeout <<endl;
+
 
   if (ret != 0) {
+
+    cout << "ret =" << ret << endl;
     return -1;
   }
+
 
   buf[0] = a;
   buf[1] = b;
@@ -337,17 +340,29 @@ int missile_usb_sendcommand(missile_usb *control,
   buf[6] = g;
   buf[7] = h;
 
-  if (control->debug) {
+
+
+  if (control_sendcmd->debug) {
     printf("sending bytes %d, %d, %d, %d, %d, %d, %d, %d\n",
 	   a, b, c, d, e, f, g, h );
   }
 
-  ret = usb_control_msg( control->handle, 0x21, 9, 0x2, 0x01, (char*) buf,
-			 8, control->timeout);
+/* if (control_sendcmd->handle != NULL) {
+    cout << "c'est bon ca passe" << endl;
+  } */
+
+    cout << control_sendcmd-> timeout << endl;
+
+  ret = usb_control_msg(control_sendcmd->handle, 0x21, 9, 0x2, 0x01, (char*) buf,
+			 8, control_sendcmd->timeout);
+
+
+
   if (ret != 8) {
     perror("usb_control_msg failed\n");
     return -1;
   }
+
 
   return 0;
 }

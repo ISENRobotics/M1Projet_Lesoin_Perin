@@ -1,15 +1,15 @@
 #ifndef COMMUN_H_INCLUDED
 #define COMMUN_H_INCLUDED
 
+
+// TRACKING =================
+
+
 #include <stdio.h>
 #include <iostream>
 #include <opencv/cv.h>
 #include "opencv/highgui.h"
 #include "Webcam.h"
-
-
-
-
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -22,4 +22,58 @@
 
 using namespace std;
 
-#endif // COMMUN_H_INCLUDED
+
+//  DRIVER ///================================
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/io.h>
+#include <errno.h>
+#include <linux/input.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <asm/types.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <math.h>
+
+
+// *****.h
+#include "InputEvent.h"
+#include "USBMissileLauncher.h"
+#include "traitement.h"
+#include "action.h"
+#include "initialisation.h"
+
+#define USB_TIMEOUT 10000 /* milliseconds */
+
+
+typedef struct missile_usb missile_usb;
+
+struct missile_usb {
+  struct usb_device *device;
+  usb_dev_handle    *handle;
+  int                debug;
+  int                timeout;
+  int                interface_claimed;
+};
+
+extern int debug_level;
+
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
