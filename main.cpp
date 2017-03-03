@@ -35,21 +35,25 @@ int main(int argc, char *argv[]) {
         maWebcam->tracking(positionObj, image); //affiche un point rouge sur la cible
 
 
-        dx=320 - positionObj.x;
-        dy=240 - positionObj.y;
-
-        cout << " dX="<< dx << " /dY=" << dy << endl;
-
-        traitement(control_main,dx,dy);
+// l'origine des pixel est en haut à gauche
 
 
-        //Affichage de l'image dans la fenetre :
-        maWebcam-> affiche("binairisation",imageBinaire);
-        maWebcam-> affiche("suivi couleur",image);
+            dx=positionObj.x - 320;
+            dy=240 - positionObj.y;
+
+            cout << " dX="<< dx << " /dY=" << dy << endl;
+
+            traitement(control_main,dx,dy);
+
+
+            //Affichage de l'image dans la fenetre :
+            maWebcam-> affiche("binairisation",imageBinaire);
+            maWebcam-> affiche("suivi couleur",image);
+
+
 
         // On attend 10 ms :
         key = cvWaitKey(10);
-
     }
 
 
@@ -58,7 +62,6 @@ int main(int argc, char *argv[]) {
     cvReleaseCapture(&fluxVideo);
     cvDestroyWindow("binairisation");
     cvDestroyWindow("suivi couleur");
-
     missile_usb_destroy(control_main);
 
     return 0;

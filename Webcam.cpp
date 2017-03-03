@@ -6,10 +6,10 @@ using namespace cv;
 Webcam::Webcam()
 {
 
-    h=260;
-    s=0;
+    h=180;
+    s=180;
     v=0;
-    ds = 20;
+    ds = 10;
     dh = 100;
     CvPoint positionObj = cvPoint(-1, -1);
 
@@ -89,7 +89,7 @@ CvPoint Webcam :: calculBarycentre (IplImage * mask) {
         }
     }
 
-    if(nbPixels > 0)
+    if(nbPixels > 40)
         return cvPoint ((int)(sommeX/nbPixels),(int)(sommeY/nbPixels));
     else
         return cvPoint(-1, -1);
@@ -101,9 +101,12 @@ IplImage *  Webcam :: tracking(CvPoint barycentre, IplImage * image) {
     int objectNextStepX, objectNextStepY;
     CvPoint positionAct=barycentre;
 
+    //construction d'un rectangle délimitant la zone de tire
+    cvRectangle(image, Point(280,200), Point(360,280),Scalar(0,215,255),+1, 4);
+
 
     //s'il y a assez de pixel on calcul la prochaine position du cercle
-    if (nbPixels > 10) {
+    if (nbPixels > 40) {
 
 
         //si le barycentre est or de l'image on ne change pas sa position

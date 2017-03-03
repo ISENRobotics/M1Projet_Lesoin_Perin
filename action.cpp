@@ -11,7 +11,7 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
   int delay = p_delay; // butée = 3.5 s
 
 
-    cout << "action" << endl;
+  //  cout << "action" << endl;
 
   //---------------------------------------------------------------------------
 
@@ -44,7 +44,10 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
 	}
 	else if(p_commande == 10){
 		set_fire = 1;
-		//set_stop = 1;
+        set_stop = 1;
+	}
+	else if(p_commande == 20){
+        set_stop = 1;
 	}
 
   char msg = 0x00;

@@ -1,28 +1,49 @@
 #include "commun.h"
 
+
+
 void traitement(missile_usb * control_traitement,int p_Dx, int p_Dy){
 
 
-    cout<< "traitement" << endl;
+   // cout<< "traitement" << endl;
 
-    int delay = 100;//((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
+    int delay =10; //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
 
-    int R = 20;
+    int R = 40;
 
-	if(p_Dx<0 && p_Dy>0 ){
-		action(control_traitement, 1, delay);
+    //sleep(4);
+
+
+    if(p_Dx==(-321) && p_Dy==(241)){
+        action(control_traitement,20, delay);
+        printf("hors du cadre");
 	}
-	else if(p_Dx>0 && p_Dy>0 ){
-	  action(control_traitement, 2, delay);
-	}
-	else if(p_Dx<0 && p_Dy<0 ){
-		action(control_traitement, 3, delay);
-	}
-	else if(p_Dx>0 && p_Dy<0 ){
-		action(control_traitement, 4, delay);
-	}
-	else{
+
+	else if(p_Dx<(R) && p_Dy>(-R) && p_Dx>(-R) && p_Dy<(R)){
 		action(control_traitement,10, delay);
+		printf("cas 5 ");
+	}
+
+	else if((p_Dx<(0) && p_Dy>(R)) || (p_Dx<(-R) && p_Dy>(0))){
+		action(control_traitement, 1, delay);
+		printf("cas 1 ");
+	}
+	else if((p_Dx>(0) && p_Dy>(R)) || (p_Dx>(R) && p_Dy>(0))){
+	  action(control_traitement, 2, delay);
+	  printf("cas 2 ");
+	}
+	else if((p_Dx<(0) && p_Dy>(-R)) || (p_Dx<(-R) && p_Dy<(0))){
+		action(control_traitement, 3, delay);
+		printf("cas 3 ");
+	}
+	else if((p_Dx>(0) && p_Dy<(-R)) && p_Dx>(R) && p_Dy<(0)){
+		action(control_traitement, 4, delay);
+		printf("cas 4 ");
+	}
+
+
+	else{
+        printf("erreur de traitement");
 	}
 
 	//rajouter le tir dans les 10%
