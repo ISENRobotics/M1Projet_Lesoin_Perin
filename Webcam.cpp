@@ -24,7 +24,7 @@ int Webcam::initWindow(const char *name)
 {
     // Définition de la fenêtre + redimensionnement :
     cvNamedWindow(name, 0);
-    cvResizeWindow(name, 640,480);
+    cvResizeWindow(name, 1280,960);
     return 0;
 }
 
