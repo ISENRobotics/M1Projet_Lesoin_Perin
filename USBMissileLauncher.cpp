@@ -258,7 +258,7 @@ int missile_do(missile_usb *control_do, int cmd, int device_type) {
   case DEVICE_TYPE_MISSILE_LAUNCHER:
 
     /* Two fixed-format initiator packets appear to be required */
-  //  cout << control_do -> timeout << " :   missile_do" <<endl;
+  //cout << control_do -> timeout << " :   missile_do" <<endl;
 
     if (missile_usb_sendcommand(control_do, 'U', 'S', 'B', 'C', 0, 0, 4, 0 )) {
       fprintf(stderr,

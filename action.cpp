@@ -1,6 +1,5 @@
 #include "commun.h"
 
-
 //---------------------------------------------------------------------------
 
 void action(missile_usb * control_action, int p_commande, int p_delay){
@@ -11,17 +10,15 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
   int delay = p_delay; // butée = 3.5 s
 
 
-  //  cout << "action" << endl;
-
   //---------------------------------------------------------------------------
 
-	if (p_commande == 0) {
+	/*if (p_commande == 0) {
 		delay = 3000;
 		set_left=1;
-		set_down=1;
-		set_stop = 1;
-	}
-	else if(p_commande == 1){ //4 zones -> sens de la lecture
+		set_down=1; } */
+		//set_stop = 1;
+
+	if(p_commande == 1){ //4 zones -> sens de la lecture
 		set_left = 1;
 		set_up = 1;
 		//set_stop = 1;
@@ -33,7 +30,6 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
 	}
 	else if(p_commande == 3){
 		set_left = 1;
-		//fprintf(stderr,"tour\n");
 		set_down = 1;
 		//set_stop = 1;
 	}
@@ -71,7 +67,7 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
     missile_do(control_action, msg, /*device_type*/DEVICE_TYPE_MISSILE_LAUNCHER);
 
     if (set_stop) {
-      usleep(delay * 10);
+      usleep(delay * 1000);
       missile_do(control_action, MISSILE_LAUNCHER_CMD_STOP, DEVICE_TYPE_MISSILE_LAUNCHER);
     }
 

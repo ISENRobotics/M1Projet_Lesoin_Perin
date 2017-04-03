@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
     int device_type = 1;
 
-    missile_usb * control_main=init(&device_type);
+    missile_usb * control_main=init(device_type);
 
 
     Webcam * maWebcam = new Webcam();

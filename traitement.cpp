@@ -7,48 +7,41 @@ void traitement(missile_usb * control_traitement,int p_Dx, int p_Dy){
 
    // cout<< "traitement" << endl;
 
-    int delay =10; //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
+    int delay =1000; //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
 
-    int R = 80;
-    int *compteur;
+    int R = 40;
+   // int *compteur;
 
     //sleep(4);
+    //*compteur=0;
+
 
 
     if(p_Dx==(-641) && p_Dy==(481)){
         action(control_traitement,20, delay);
         printf("hors du cadre");
-        compteur=0;
 	}
 
 	else if(p_Dx<(R) && p_Dy>(-R) && p_Dx>(-R) && p_Dy<(R)) {
-		compteur++;
 		printf(" cible verrouillé ");
-		if (*compteur==10) {
-		    printf("FIRE");
-            action(control_traitement,10, delay);
-        }
+        action(control_traitement,10, delay);
 	}
 
-	else if((p_Dx<(0) && p_Dy>(R)) || (p_Dx<(-R) && p_Dy>(0))){
+	else if((p_Dx<(0) && p_Dy>(0))) {
 		action(control_traitement, 1, delay);
 		printf("cas 1 ");
-		compteur=0;
 	}
-	else if((p_Dx>(0) && p_Dy>(R)) || (p_Dx>(R) && p_Dy>(0))){
+	else if((p_Dx>(0) && p_Dy>(0))) {
 	  action(control_traitement, 2, delay);
 	  printf("cas 2 ");
-	  compteur=0;
 	}
-	else if((p_Dx<(0) && p_Dy>(-R)) || (p_Dx<(-R) && p_Dy<(0))){
+	else if((p_Dx<(0) && p_Dy<(0))) {
 		action(control_traitement, 3, delay);
 		printf("cas 3 ");
-		compteur=0;
 	}
-	else if((p_Dx>(0) && p_Dy<(-R)) && p_Dx>(R) && p_Dy<(0)){
+	else if((p_Dx>(0) && p_Dy<(0))) {
 		action(control_traitement, 4, delay);
 		printf("cas 4 ");
-		compteur=0;
 	}
 
 

@@ -5,7 +5,7 @@ int debug_level = 0;
 
   //---------------------------------------------------------------------------
 
-missile_usb * init(int *device_type){
+missile_usb * init(int device_type){
 
 	char *device = NULL;
 
@@ -25,7 +25,7 @@ missile_usb * init(int *device_type){
     return NULL;
   }
 
-  if (missile_usb_finddevice(control_init, 0, *device_type) != 0) {
+  if (missile_usb_finddevice(control_init, 0, device_type) != 0) {
     fprintf(stderr, "USBMissileLauncher device not found\n");
     return NULL;
   }
