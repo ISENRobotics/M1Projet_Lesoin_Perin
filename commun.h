@@ -11,6 +11,11 @@
 #include "opencv/highgui.h"
 #include "Webcam.h"
 
+#include <iostream>
+using namespace std;
+#include <opencv2/opencv.hpp>
+using namespace cv;
+
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define abs(x) ((x) > 0 ? (x) : -(x))
@@ -39,6 +44,7 @@ using namespace std;
 #include <fcntl.h>
 #include <stdint.h>
 #include <math.h>
+#include <usb.h>
 
 
 // *****.h

@@ -7,7 +7,7 @@ void traitement(missile_usb * control_traitement,int p_Dx, int p_Dy){
 
    // cout<< "traitement" << endl;
 
-    int delay =1000; //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
+    int delay =500; //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
 
     int R = 40;
    // int *compteur;
@@ -17,7 +17,7 @@ void traitement(missile_usb * control_traitement,int p_Dx, int p_Dy){
 
 
 
-    if(p_Dx==(-641) && p_Dy==(481)){
+    if(p_Dx==(-321) && p_Dy==(241)){
         action(control_traitement,20, delay);
         printf("hors du cadre");
 	}

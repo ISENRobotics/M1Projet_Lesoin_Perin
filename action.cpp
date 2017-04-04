@@ -43,7 +43,7 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
         set_stop = 1;
 	}
 	else if(p_commande == 20){
-        set_stop = 1;
+        //set_stop = 1;
 	}
 
   char msg = 0x00;

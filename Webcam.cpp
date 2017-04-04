@@ -6,11 +6,11 @@ using namespace cv;
 Webcam::Webcam()
 {
 
-    h=180;
-    s=180;
-    v=0;
-    ds = 10;
-    dh = 100;
+    h=170; // de 160 à 180
+    s=175; // de 100 à 255
+    v=0; // non pris en compte pour palier aux variations de luminosité
+    ds = 75;
+    dh = 10;
     CvPoint positionObj = cvPoint(-1, -1);
 
 }
@@ -20,70 +20,82 @@ Webcam ::~Webcam()
     //destructor
 }
 
-int Webcam::initWindow(const char *name)
+/*int Webcam::initWindow(const char *name)
 {
     // Définition de la fenêtre + redimensionnement :
     cvNamedWindow(name, 0);
     cvResizeWindow(name, 1280,960);
     return 0;
-}
+}*/
 
 
 
-CvCapture * Webcam:: initFlux() {
+VideoCapture Webcam:: initFlux() {
 
     // Ouverture du flux video :
-    capture = cvCreateCameraCapture(0);
+	VideoCapture capture(0);
 
     // Verification si l'ouverture du flux est ok :
-    if (!capture)
+	if(!capture.isOpened())
     {
         cout << "Erreur ouverture flux video." << endl;
         return NULL;
     }
-
 
     return capture;
 }
 
 
 
-IplImage * Webcam :: binairisation (IplImage * fluxOriginal) {
+Mat Webcam :: binairisation (Mat fluxOriginal) {
 
+	Mat hsv;
+	vector<Mat> planes;
+	cvtColor(fluxOriginal, hsv, CV_BGR2HSV);
+	split(hsv, planes);
 
-        //création d'un masque pour isoler
-        mask=cvCreateImage(cvGetSize(fluxOriginal), fluxOriginal-> depth, 1);
+	//seuillages
+	Mat imgH = planes[0];
+	Mat imgS = planes[1];
+	Mat imgV = planes[2];
+	Mat mask = Mat::zeros(hsv.size(), CV_8UC1);
 
+	int largeur = imgH.cols;
+	int hauteur = imgH.rows;
+	int i=0;
+	int j=0;
+	for(i=0;i<(hauteur);i++){
+		for(j=0;j<(largeur);j++){
+			int pixelH = imgH.at<unsigned char>(i, j);
+			int pixelS = imgS.at<unsigned char>(i, j);
+			int pixelV = imgV.at<unsigned char>(i, j);
+			if( (h-dh)<pixelH && pixelH<(h+dh) && (s-ds)<pixelS && pixelS<(s+ds) ){
+				mask.at<unsigned char>(i, j) = 255;
+			} else {
+				mask.at<unsigned char>(i, j) = 0;
+			}
+		}
+	}
 
-         // conversion du flux RGB en HSV pour travailler sur la saturation et éviter les problèmes du à la brillance de l'image
-        hsv=cvCloneImage(fluxOriginal);
-        cvCvtColor(fluxOriginal, hsv, CV_BGR2HSV);
-
-        //création d'un masque pour isoler
-        cvInRangeS(hsv,cvScalar(s - ds -1, h - dh, 0),cvScalar(s+ ds -1, h + dh, 255), mask);
-
-        //isolation de l'objetr
-        kernel=cvCreateStructuringElementEx(5,5,2,2, CV_SHAPE_ELLIPSE);
-        cvDilate(mask, mask, kernel, 1);
-        cvErode(mask, mask, kernel, 1);
-
-        return mask;
-
+	return mask;
 }
 
 
-CvPoint Webcam :: calculBarycentre (IplImage * mask) {
+CvPoint Webcam :: calculBarycentre (Mat mask) {
 
     sommeX=0;
     sommeY=0;
     nbPixels=0;
 
-    for (x=0; x< mask-> width; x++) {
-        for (y=0; y< mask->height; y++) {
-
-            if (((uchar*)(mask->imageData + y*mask-> widthStep)) [x] == 255) {
-                        sommeX +=x;
-                        sommeY +=y;
+    int largeur = mask.cols;
+    int hauteur = mask.rows;
+    int i=0;
+    int j=0;
+    for(i=0;i<(hauteur);i++){
+    	for(j=0;j<(largeur);j++){
+            if (mask.at<unsigned char>(i, j) == 255) {
+                        sommeX += j;
+                        sommeY += i;
                         nbPixels ++;
             }
         }
@@ -93,67 +105,54 @@ CvPoint Webcam :: calculBarycentre (IplImage * mask) {
         return cvPoint ((int)(sommeX/nbPixels),(int)(sommeY/nbPixels));
     else
         return cvPoint(-1, -1);
-
 }
 
-IplImage *  Webcam :: tracking(CvPoint barycentre, IplImage * image) {
+
+Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
 
     int objectNextStepX, objectNextStepY;
-    CvPoint positionAct=barycentre;
+    CvPoint positionAct = barycentre;
 
     //construction d'un rectangle délimitant la zone de tire
-    cvRectangle(image, Point(280,200), Point(360,280),Scalar(0,215,255),+1, 4);
+    rectangle(image, cvPoint(280,200), cvPoint(360,280), cvScalar(0,215,255), 1, 4);
 
 
     //s'il y a assez de pixel on calcul la prochaine position du cercle
-    if (nbPixels > 40) {
+    if (nbPixels > 225) { //60
 
-
-        //si le barycentre est or de l'image on ne change pas sa position
-        if (positionAct.x == 1 || positionAct.y == -1) {
+        //si le barycentre est hors de l'image on ne change pas sa position
+        if (positionAct.x == -1 || positionAct.y == -1) {
             positionAct.x = positionAct.x;
             positionAct.y = positionAct.y;
         }
-
         // change pas à pas la position de l'object vers la position désiriée
         if(abs( positionAct.x - barycentre.x) > 5 ) {
             objectNextStepX = max(5, min (100, abs(positionAct.x - barycentre.x)/2));
             positionAct.x += (-1)* sign(positionAct.x - barycentre.x) * objectNextStepX;
         }
-
-         if(abs( positionAct.y - barycentre.y) > 5 ) {
+        if(abs( positionAct.y - barycentre.y) > 5 ) {
             objectNextStepY = max(5, min (100, abs(positionAct.y - barycentre.y)/2));
             positionAct.y += (-1)* sign(positionAct.y - barycentre.y) * objectNextStepY;
         }
 
+        circle(image, positionAct, 15, CV_RGB(255,0,0), -1);
 
     }
 
     else {
-
         positionAct.x = -1;
         positionAct.y = -1;
     }
 
-    if (nbPixels >10) {
-        cvDrawCircle(image, positionAct, 15, CV_RGB(255,0,0), -1);
-    }
-
-    //cvShowImage("color tracking", image);
 
     return image;
 }
 
 
-void Webcam :: affiche (const char * nomFenetre , IplImage * imgAffiche) {
+void Webcam :: affiche (Mat imageTracking, Mat imageBinaire) {
 
-    cvShowImage(nomFenetre, imgAffiche);
+	imshow("Image tracking", imageTracking); // affichage de l'image avec le tracking
+	imshow("Image binaire", imageBinaire); // affichage de l'image de la binairisation
 
 }
-
-
-
-
-
-
 
