@@ -5,30 +5,13 @@ using namespace cv;
 
 Webcam::Webcam()
 {
-
-    h=170; // de 160 à 180
-    s=175; // de 100 à 255
-    v=0; // non pris en compte pour palier aux variations de luminosité
-    ds = 75;
-    dh = 10;
-    CvPoint positionObj = cvPoint(-1, -1);
-
+	nbPixels = 0;
 }
 
 Webcam ::~Webcam()
 {
     //destructor
 }
-
-/*int Webcam::initWindow(const char *name)
-{
-    // Définition de la fenêtre + redimensionnement :
-    cvNamedWindow(name, 0);
-    cvResizeWindow(name, 1280,960);
-    return 0;
-}*/
-
-
 
 VideoCapture Webcam:: initFlux() {
 
@@ -39,7 +22,7 @@ VideoCapture Webcam:: initFlux() {
 	if(!capture.isOpened())
     {
         cout << "Erreur ouverture flux video." << endl;
-        return NULL;
+        return 0;
     }
 
     return capture;
@@ -47,11 +30,17 @@ VideoCapture Webcam:: initFlux() {
 
 
 
-Mat Webcam :: binairisation (Mat fluxOriginal) {
+Mat Webcam :: binairisation (Mat image) {
+
+	int h = 170; // de 160 à 180
+	int s = 175; // de 100 à 255
+    //int v = 0;  non pris en compte pour palier aux variations de luminosité
+	int ds = 75;
+	int dh = 10;
 
 	Mat hsv;
 	vector<Mat> planes;
-	cvtColor(fluxOriginal, hsv, CV_BGR2HSV);
+	cvtColor(image, hsv, CV_BGR2HSV);
 	split(hsv, planes);
 
 	//seuillages
@@ -68,7 +57,6 @@ Mat Webcam :: binairisation (Mat fluxOriginal) {
 		for(j=0;j<(largeur);j++){
 			int pixelH = imgH.at<unsigned char>(i, j);
 			int pixelS = imgS.at<unsigned char>(i, j);
-			int pixelV = imgV.at<unsigned char>(i, j);
 			if( (h-dh)<pixelH && pixelH<(h+dh) && (s-ds)<pixelS && pixelS<(s+ds) ){
 				mask.at<unsigned char>(i, j) = 255;
 			} else {
@@ -81,19 +69,19 @@ Mat Webcam :: binairisation (Mat fluxOriginal) {
 }
 
 
-CvPoint Webcam :: calculBarycentre (Mat mask) {
+CvPoint Webcam :: calculBarycentre (Mat imageBinaire) {
 
-    sommeX=0;
-    sommeY=0;
-    nbPixels=0;
+    int sommeX = 0;
+    int sommeY = 0;
+    nbPixels = 0;
 
-    int largeur = mask.cols;
-    int hauteur = mask.rows;
+    int largeur = imageBinaire.cols;
+    int hauteur = imageBinaire.rows;
     int i=0;
     int j=0;
     for(i=0;i<(hauteur);i++){
     	for(j=0;j<(largeur);j++){
-            if (mask.at<unsigned char>(i, j) == 255) {
+            if (imageBinaire.at<unsigned char>(i, j) == 255) {
                         sommeX += j;
                         sommeY += i;
                         nbPixels ++;
@@ -117,20 +105,16 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
     rectangle(image, cvPoint(280,200), cvPoint(360,280), cvScalar(0,215,255), 1, 4);
 
 
-    //s'il y a assez de pixel on calcul la prochaine position du cercle
+    //s'il y a assez de pixels binairisé en blanc on calcul la prochaine position du cercle
     if (nbPixels > 225) { //60
 
-        //si le barycentre est hors de l'image on ne change pas sa position
-        if (positionAct.x == -1 || positionAct.y == -1) {
-            positionAct.x = positionAct.x;
-            positionAct.y = positionAct.y;
-        }
-        // change pas à pas la position de l'object vers la position désiriée
+        //if (positionAct.x == -1 || positionAct.y == -1)  -> si le barycentre est hors de l'image on ne change pas sa position
+        // sinon on change pas à pas la position de l'object vers la position désiriée
         if(abs( positionAct.x - barycentre.x) > 5 ) {
             objectNextStepX = max(5, min (100, abs(positionAct.x - barycentre.x)/2));
             positionAct.x += (-1)* sign(positionAct.x - barycentre.x) * objectNextStepX;
         }
-        if(abs( positionAct.y - barycentre.y) > 5 ) {
+        else if(abs( positionAct.y - barycentre.y) > 5 ) {
             objectNextStepY = max(5, min (100, abs(positionAct.y - barycentre.y)/2));
             positionAct.y += (-1)* sign(positionAct.y - barycentre.y) * objectNextStepY;
         }

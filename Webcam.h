@@ -11,27 +11,15 @@ class Webcam
     public:
         Webcam();
         ~Webcam();
-        int initWindow(const char *);
         VideoCapture initFlux();
-        CvPoint calculBarycentre(Mat mask);
+        CvPoint calculBarycentre(Mat imageBinaire);
         Mat tracking(CvPoint x, Mat image);
         void affiche(Mat imageTracking, Mat imageBinaire);
-        Mat binairisation (Mat fluxOriginal);
+        Mat binairisation (Mat image);
 
     private:
-        IplImage *image;
-        CvCapture *capture;
-        IplImage *hsv;
-        IplImage *mask;
-        CvScalar pixel;
-        IplConvKernel * kernel;
-        int h, s, v, tolerance;
-        int event;
-        int x,y, ds, dh, dv;
-        int sommeX,sommeY;
-        int nbPixels;
-        CvPoint positionObj;
 
+        int nbPixels;
 };
 
 #endif // WEBCAM_H_INCLUDED

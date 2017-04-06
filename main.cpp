@@ -16,12 +16,8 @@ int main(int argc, char *argv[]) {
 
     missile_usb * control_main=init(device_type);
 
-
     Webcam * maWebcam = new Webcam();
     fluxVideo = maWebcam->initFlux();
-    //maWebcam->initWindow("binairisation");
-    //maWebcam->initWindow("suivi couleur");
-
 
     while(key!='q' && key!='Q') {
 
@@ -44,20 +40,11 @@ int main(int argc, char *argv[]) {
         //Affichage des fenetres :
         maWebcam->affiche(imageTracking, imageBinaire);
 
-
-
-        // On attend 10 ms :
-        //key = cvWaitKey(10);
-
         if(waitKey(30) >= 0); // on patiente 30 millisecondes avant de passer à l'image suivante
 
     }
 
     delete maWebcam;
-
-    //cvReleaseCapture(&fluxVideo);
-    //cvDestroyWindow("binairisation");
-    //cvDestroyWindow("suivi couleur");
     missile_usb_destroy(control_main);
 
     return 0;
