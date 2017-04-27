@@ -1,4 +1,4 @@
-#include "commun.h"
+/*#include "commun.h"
 
 missile_usb *control_main;
 
@@ -48,4 +48,4 @@ int main(int argc, char *argv[]) {
     missile_usb_destroy(control_main);
 
     return 0;
-}
+}*/

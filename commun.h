@@ -45,6 +45,7 @@ using namespace std;
 #include <stdint.h>
 #include <math.h>
 #include <usb.h>
+#include <libusb-1.0/libusb.h>
 
 
 // *****.h
@@ -53,6 +54,9 @@ using namespace std;
 #include "traitement.h"
 #include "action.h"
 #include "initialisation.h"
+#include "servoController.h"
+#include "traitementCam.h"
+#include "protocol.h"
 
 #define USB_TIMEOUT 10000 /* milliseconds */
 

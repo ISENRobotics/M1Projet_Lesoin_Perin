@@ -17,7 +17,7 @@ void traitement(missile_usb * control_traitement,int p_Dx, int p_Dy){
 
 
 
-    if(p_Dx==(-321) && p_Dy==(241)){
+    if(p_Dx==(-321) && p_Dy==(239)){
         action(control_traitement,20, delay);
         printf("hors du cadre");
 	}
