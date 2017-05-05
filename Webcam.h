@@ -11,13 +11,13 @@ class Webcam
     public:
         Webcam();
         ~Webcam();
-        VideoCapture initFlux();
+        VideoCapture initFlux(int device);
         CvPoint calculBarycentre(Mat imageBinaire);
         Mat tracking(CvPoint x, Mat image);
-        void affiche(Mat imageTracking, Mat imageBinaire);
+        void affiche(Mat imageTracking, Mat imageBinaire, Mat imageTracking2, Mat imageBinaire2);
         Mat binairisation (Mat image);
 
-    private:
+    public:
 
         int nbPixels;
 };

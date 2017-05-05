@@ -57,6 +57,7 @@ using namespace std;
 #include "servoController.h"
 #include "traitementCam.h"
 #include "protocol.h"
+#include "profondeur.h"
 
 #define USB_TIMEOUT 10000 /* milliseconds */
 

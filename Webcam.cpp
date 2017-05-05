@@ -13,10 +13,10 @@ Webcam ::~Webcam()
     //destructor
 }
 
-VideoCapture Webcam:: initFlux() {
+VideoCapture Webcam:: initFlux(int device) {
 
     // Ouverture du flux video :
-	VideoCapture capture(0);
+	VideoCapture capture(device);
 
     // Verification si l'ouverture du flux est ok :
 	if(!capture.isOpened())
@@ -24,7 +24,7 @@ VideoCapture Webcam:: initFlux() {
         cout << "Erreur ouverture flux video." << endl;
         return 0;
     }
-
+	cout << "webcam " << device << " opened" << endl;
     return capture;
 }
 
@@ -133,10 +133,12 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
 }
 
 
-void Webcam :: affiche (Mat imageTracking, Mat imageBinaire) {
+void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2) {
 
-	imshow("Image tracking", imageTracking); // affichage de l'image avec le tracking
-	imshow("Image binaire", imageBinaire); // affichage de l'image de la binairisation
+	imshow("Image tracking 1", imageTracking1); // affichage de l'image avec le tracking
+	imshow("Image tracking 2", imageTracking2); // affichage de l'image avec le tracking
+	//imshow("Image binaire 1", imageBinaire1); // affichage de l'image de la binairisation
+	//imshow("Image binaire 2", imageBinaire2); // affichage de l'image de la binairisation
 
 }
 

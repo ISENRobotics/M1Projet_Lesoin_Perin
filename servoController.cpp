@@ -6,6 +6,8 @@
 #include "traitementCam.h"*/
 #include "commun.h"
 
+#define PI 3.14159
+
 
 using namespace std;
 
@@ -176,102 +178,103 @@ using namespace std;
       max_ms = _max_ms;
     }
 
+    void Servo::configuration(int angle){
+    	min_angle = 64 ;
+    	max_angle = 3280;
+    	min_ms = 800;
+    	max_ms = 2200;
+    	driver->setSpeed(channel, 0);
+    	driver->setAcceleration(channel, 0);
+    	setAngle(angle);
+    }
+
 
 
 int main(int argc, char* argv[]) {
 
 	char key=0;
-	Mat image;
-	Mat imageBinaire;
-	Mat imageTracking;
-	VideoCapture fluxVideo;
-	CvPoint positionObj;
-	int dx=0, dy=0;
+	int focus1, focus2;
+	Mat image1, image2;
+	Mat imageBinaire1, imageBinaire2;
+	Mat imageTracking1, imageTracking2;
+	VideoCapture fluxVideo1, fluxVideo2;
+	CvPoint positionObj1, positionObj2;
+	int dx1=0, dy1=0, dx2, dy2;
 
 	PololuMaestro driver;
-	Servo pan(&driver, 0);
-    pan.minAngle(64);
-    pan.maxAngle(3280);
-    pan.minMs(800);
-    pan.maxMs(2200);
-    pan.setSpeed(0);
-    pan.setAcceleration(0);
-    pan.setAngle(1672);
-	Servo tilt(&driver, 1);
-    tilt.minAngle(64);
-    tilt.maxAngle(3280);
-    tilt.minMs(800);
-    tilt.maxMs(2200);
-    tilt.setSpeed(0);
-    tilt.setAcceleration(0);
-    tilt.setAngle(1672);
+	Servo pan1(&driver, 2);
+	pan1.configuration(2000);
+	Servo tilt1(&driver, 3);
+	tilt1.configuration(2000);
+	Servo pan2(&driver, 0);
+	pan2.configuration(2000);
+	Servo tilt2(&driver, 1);
+	tilt2.configuration(1800);
 
-    Webcam * maWebcam = new Webcam();
-    cout << "webcam opened" << endl;
-    fluxVideo = maWebcam->initFlux();
+	Webcam * maWebcam = new Webcam();
+    Webcam * maWebcam1 = new Webcam();
+    fluxVideo1 = maWebcam1->initFlux(0);
+    Webcam * maWebcam2 = new Webcam();
+    fluxVideo2 = maWebcam2->initFlux(1);
 
     while(key!='q' && key!='Q') {
 
-        fluxVideo >> image; //récupération du flux video dans la var image
+        fluxVideo1 >> image1; //récupération du flux video dans la var image
+        imageBinaire1 = maWebcam1->binairisation(image1); //binairisation de l'image
+        positionObj1=maWebcam1->calculBarycentre(imageBinaire1); //calcul barycentre
+        imageTracking1 = maWebcam1->tracking(positionObj1, image1); //affiche un point rouge sur la cible
 
-        imageBinaire = maWebcam->binairisation(image); //binairisation de l'image
+        fluxVideo2 >> image2; //récupération du flux video dans la var image
+        imageBinaire2 = maWebcam2->binairisation(image2); //binairisation de l'image
+        positionObj2=maWebcam2->calculBarycentre(imageBinaire2); //calcul barycentre
+        imageTracking2 = maWebcam2->tracking(positionObj2, image2); //affiche un point rouge sur la cible*/
 
-        positionObj=maWebcam->calculBarycentre(imageBinaire); //calcul barycentre
-        imageTracking = maWebcam->tracking(positionObj, image); //affiche un point rouge sur la cible
 
         // l'origine des pixel est en haut à gauche
-        dx=positionObj.x - 320;
-        dy=240 - positionObj.y;
+        dx1=positionObj1.x - 320;
+        dy1=240 - positionObj1.y;
+        dx2=positionObj2.x - 320;
+        dy2=240 - positionObj2.y;
 
-        cout << " dX="<< dx << " dY=" << dy << endl;
+        //cout << " dX1="<< dx1 << " dY1=" << dy1 << endl;
+        //cout << " dX2="<< dx2 << " dY2=" << dy2 << endl;
 
-        //traitement
-        float panAngle=pan.getPosition();
-        float tiltAngle=tilt.getPosition();
-		int panCoef=2; // coeff idéal 5.025
-		int tiltCoef=2;  //coef idéal 6.7
-	    int R = 40;
-	    int delay = 20;
+        if( dx1==(-321) && dy1==(241) ){
+        	cout << "tracking 1 manquant" << endl;
+        }
+        else if( dx2==(-321) && dy2==(241) ){
+        	cout << "tracking 2 manquant" << endl;
+        }
+        else {
+        	int hauteur = profondeur( (float)pan1.getPosition(), (float)pan2.getPosition(), 50);
+        	cout << "La distance de l'objet est : " << hauteur << endl;
+        }
 
-	    if(dx==(-321) && dy==(241)){
-	    	pan.setAngle(panAngle-0); // - car quand postition augmente tourelle va vers gauche et non droite
-	    	tilt.setAngle(tiltAngle-0);
-	        printf("hors du cadre");
-		}
-		else if(dx<(R) && dy>(-R) && dx>(-R) && dy<(R)) {
-			printf(" cible verrouillé ");
-			pan.setAngle(panAngle-0);
-			tilt.setAngle(tiltAngle-0);
-		}
-		else if((dx<(0) && dy>(0))) {
-			pan.setAngle(panAngle+delay);
-			tilt.setAngle(tiltAngle-delay);
-			printf("cas 1 ");
-		}
-		else if((dx>(0) && dy>(0))) {
-			pan.setAngle(panAngle-delay);
-			tilt.setAngle(tiltAngle-delay);
-			printf("cas 2 ");
-		}
-		else if((dx<(0) && dy<(0))) {
-			pan.setAngle(panAngle+delay);
-			tilt.setAngle(tiltAngle+delay);
-			printf("cas 3 ");
-		}
-		else if((dx>(0) && dy<(0))) {
-			pan.setAngle(panAngle-delay);
-			tilt.setAngle(tiltAngle+delay);
-			printf("cas 4 ");
-		}
+        int marge = 5000;
+        //traitement tracking cam
+        if( (maWebcam1->nbPixels)>((maWebcam2->nbPixels)+marge) ){ // permet de réorienter les webcam vers la cible principale
+        	focus1 = 1;
+        	focus2 = 0;
+        }else if( (maWebcam2->nbPixels)>((maWebcam1->nbPixels)+marge) ){
+        	focus2 = 1;
+        	focus1 = 0;
+        }
+        else{
+        	focus1 = 1;
+        	focus2 = 1;
+        }
+        traitementCam(dx1, dy1, pan1, tilt1, focus1, 1);
+        traitementCam(dx2, dy2, pan2, tilt2, focus2, 2);
 
         //Affichage des fenetres :
-        maWebcam->affiche(imageTracking, imageBinaire);
+        maWebcam->affiche(imageTracking1, imageBinaire1, imageTracking2, imageBinaire2);
 
         if(waitKey(30) >= 0); // on patiente 30 millisecondes avant de passer à l'image suivante
 
     }
 
-    delete maWebcam;
+    delete maWebcam1;
+    delete maWebcam2;
     return 0;
 
 }

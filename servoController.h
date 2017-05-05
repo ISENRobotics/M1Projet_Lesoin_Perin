@@ -37,6 +37,7 @@ class Servo
 		void maxAngle(uint16_t _max_angle);
 		void minMs(uint16_t _min_ms);
 		void maxMs(uint16_t _max_ms);
+		void configuration(int angle);
 
     private:
 		PololuMaestro *driver;
