@@ -12,6 +12,7 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
 
   //---------------------------------------------------------------------------
 
+
 	/*if (p_commande == 0) {
 		delay = 3000;
 		set_left=1;
@@ -20,30 +21,30 @@ void action(missile_usb * control_action, int p_commande, int p_delay){
 
 	if(p_commande == 1){ //4 zones -> sens de la lecture
 		set_left = 1;
-		set_up = 1;
-		//set_stop = 1;
+		//set_up = 0;
+		set_stop = 1;
 	}
 	else if(p_commande == 2){
 		set_right = 1;
-		set_up = 1;
-		//set_stop = 1;
+		//set_up = 0;
+		set_stop = 1;
 	}
 	else if(p_commande == 3){
-		set_left = 1;
-		set_down = 1;
-		//set_stop = 1;
+		//set_left = 1;
+		set_up = 1;
+		set_stop = 1;
 	}
 	else if(p_commande == 4){
-		set_right = 1;
+		//set_right = 1;
 		set_down = 1;
-		//set_stop = 1;
+		set_stop = 1;
 	}
 	else if(p_commande == 10){
 		set_fire = 1;
         set_stop = 1;
 	}
 	else if(p_commande == 20){
-        //set_stop = 1;
+        set_stop = 1;
 	}
 
   char msg = 0x00;

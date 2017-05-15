@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 #include <opencv/cv.h>
 #include "opencv/highgui.h"
 #include "Webcam.h"
@@ -23,6 +24,7 @@ using namespace cv;
 
 #define STEP_MIN 5
 #define STEP_MAX 100
+#define PI 3.141592
 
 
 using namespace std;
@@ -44,21 +46,23 @@ using namespace std;
 #include <fcntl.h>
 #include <stdint.h>
 #include <math.h>
-#include <usb.h>
 #include <libusb-1.0/libusb.h>
+#include <usb.h>
+
 
 
 // *****.h
-#include "InputEvent.h"
+#include "inputEvent.h"
 #include "USBMissileLauncher.h"
 #include "traitement.h"
 #include "action.h"
-#include "initialisation.h"
+#include "initLauncher.h"
 #include "servoController.h"
 #include "traitementCam.h"
 #include "protocol.h"
-#include "profondeur.h"
-
+#include "configLauncher.h"
+#include "statelauncher.h"
+#include "calculDistance.h"
 #define USB_TIMEOUT 10000 /* milliseconds */
 
 

@@ -24,7 +24,9 @@ VideoCapture Webcam:: initFlux(int device) {
         cout << "Erreur ouverture flux video." << endl;
         return 0;
     }
-	cout << "webcam " << device << " opened" << endl;
+
+	cout <<"Webcam crée" <<endl;
+
     return capture;
 }
 
@@ -65,6 +67,8 @@ Mat Webcam :: binairisation (Mat image) {
 		}
 	}
 
+	erode( mask, mask, MORPH_RECT );
+
 	return mask;
 }
 
@@ -89,7 +93,7 @@ CvPoint Webcam :: calculBarycentre (Mat imageBinaire) {
         }
     }
 
-    if(nbPixels > 40)
+    if(nbPixels > 300)
         return cvPoint ((int)(sommeX/nbPixels),(int)(sommeY/nbPixels));
     else
         return cvPoint(-1, -1);
@@ -102,11 +106,11 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
     CvPoint positionAct = barycentre;
 
     //construction d'un rectangle délimitant la zone de tire
-    rectangle(image, cvPoint(280,200), cvPoint(360,280), cvScalar(0,215,255), 1, 4);
+    rectangle(image, cvPoint(300,220), cvPoint(340,260), cvScalar(0,215,255), 1, 4);
 
 
     //s'il y a assez de pixels binairisé en blanc on calcul la prochaine position du cercle
-    if (nbPixels > 225) { //60
+    if (nbPixels > 300) {
 
         //if (positionAct.x == -1 || positionAct.y == -1)  -> si le barycentre est hors de l'image on ne change pas sa position
         // sinon on change pas à pas la position de l'object vers la position désiriée
@@ -133,12 +137,16 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
 }
 
 
-void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2) {
+void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2 ) {
 
 	imshow("Image tracking 1", imageTracking1); // affichage de l'image avec le tracking
 	imshow("Image tracking 2", imageTracking2); // affichage de l'image avec le tracking
 	//imshow("Image binaire 1", imageBinaire1); // affichage de l'image de la binairisation
 	//imshow("Image binaire 2", imageBinaire2); // affichage de l'image de la binairisation
 
+}
+
+int Webcam :: getNbPixels () {
+	return nbPixels;
 }
 
