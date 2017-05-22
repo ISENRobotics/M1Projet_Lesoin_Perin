@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
         imageTracking2 = maWebcam2->tracking(positionObj2, image2); //affiche un point rouge sur la cible
 
         //Affichage des fenetres :
-        maWebcam1->affiche(imageTracking1, imageBinaire1, imageTracking2, imageBinaire2);
+        maWebcam1->affiche(imageTracking1, imageBinaire1, imageTracking2, imageBinaire2, focus1, focus2, locked1, locked2, nbPixelsLocked1, nbPixelsLocked2);
 
         // Calcul des écarts entre le centre des images des webcams et les barycentres en x et y (l'origine des pixel est en haut à gauche)
         dx1=positionObj1.x - 320;
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
         //Définition de l'objet traqué prioritaire
         ratio = (float)nbPixels1/nbPixels2;
         cout << "nbPixels1 = " << nbPixels1 << " et nbPixels2 = " << nbPixels2 << " et ratio = " << ratio << endl;
-        if( ratio > 3){ // permet de réorienter les webcam vers la cible principale // 1.7
+        if( ratio > 3.8){ // permet de réorienter les webcam vers la cible principale // 3
         	focus1 = 1;
         	focus2 = 0;
         }else if( ratio < 0.2 ) { // 0.3

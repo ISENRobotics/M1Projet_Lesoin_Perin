@@ -14,7 +14,7 @@ class Webcam
         VideoCapture initFlux(int device);
         CvPoint calculBarycentre(Mat imageBinaire);
         Mat tracking(CvPoint x, Mat image);
-        void affiche(Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2);
+        void affiche(Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2, int focus1, int focus2, int locked1, int locked2, int nbPixelsLocked1, int nbPixelsLocked2);
         Mat binairisation (Mat image);
         int getNbPixels();
         int getNbPixelsLocked(Mat imageBinaire);

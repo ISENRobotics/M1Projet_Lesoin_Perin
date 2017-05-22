@@ -69,6 +69,7 @@ Mat Webcam :: binairisation (Mat image) {
 	}
 
 	erode( mask, mask, MORPH_RECT );
+	erode( mask, mask, MORPH_RECT );
 
 	return mask;
 }
@@ -107,7 +108,7 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
     CvPoint positionAct = barycentre;
 
     //construction d'un rectangle délimitant la zone de tire
-    rectangle(image, cvPoint(300,220), cvPoint(340,260), cvScalar(0,215,255), 1, 4);
+    rectangle(image, cvPoint(300,220), cvPoint(340,260), cvScalar(0,215,255), 2, 4);
 
 
     //s'il y a assez de pixels binairisé en blanc on calcul la prochaine position du cercle
@@ -138,8 +139,15 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
 }
 
 
-void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2 ) {
-
+void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2, int focus1, int focus2, int locked1, int locked2, int nbPixelsLocked1, int nbPixelsLocked2) {
+	if(locked1==1 && focus1==1 && nbPixelsLocked1>500){
+		putText(imageTracking1, "Fire !!!", cvPoint(280,60),   FONT_HERSHEY_DUPLEX, 1, cvScalar(0,0,255), 1);
+		rectangle(imageTracking1, cvPoint(300,220), cvPoint(340,260), cvScalar(0,0,255), 5, 4);
+	}
+	if(locked2==1 && focus2==1 && nbPixelsLocked2>500){
+		putText(imageTracking2, "Fire !!!", cvPoint(280,60),   FONT_HERSHEY_DUPLEX, 1, cvScalar(0,0,255), 1);
+		rectangle(imageTracking2, cvPoint(300,220), cvPoint(340,260), cvScalar(0,0,255), 5, 4);
+	}
 	imshow("Image tracking 1", imageTracking1); // affichage de l'image avec le tracking
 	imshow("Image tracking 2", imageTracking2); // affichage de l'image avec le tracking
 	//imshow("Image binaire 1", imageBinaire1); // affichage de l'image de la binairisation

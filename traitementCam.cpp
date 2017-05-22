@@ -41,7 +41,7 @@ int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, 
     }else if(focus == 0){ //objet tracké non prioritaire
     	if( numCam==1 && positionCam2<2000 ){
     		pan.setAngle(positionCam2-700); // 45 degrés à gauche
-    		tilt.setAngle(2000);
+    		tilt.setAngle(2000); //1700
     		return 0;
     	}else if( (numCam==1) ){
     	    pan.setAngle(positionCam2-700); // 45 degrés à droite
@@ -49,7 +49,7 @@ int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, 
     	    return 0;
     	}else if( numCam==2 && positionCam1<2000 ){
     		pan.setAngle(positionCam1+700); // 45 degrés à gauche
-    		tilt.setAngle(1800);
+    		tilt.setAngle(1800); //1500
     		return 0;
     	}else if( (numCam==2) ){
     		pan.setAngle(positionCam1+700); // 45 degrés à droite
