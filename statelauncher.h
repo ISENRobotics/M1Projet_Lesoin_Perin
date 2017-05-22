@@ -17,7 +17,7 @@ public :
 public:
 	state_launcher();
 	~state_launcher();
-	void update_state(float new_ah); //float new_av);
+	void update_state(float new_ah, float new_av);
 	int get_angleV();
 	int get_angleH();
 };

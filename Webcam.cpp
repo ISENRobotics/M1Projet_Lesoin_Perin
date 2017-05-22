@@ -6,6 +6,7 @@ using namespace cv;
 Webcam::Webcam()
 {
 	nbPixels = 0;
+	nbPixelsLocked = 0;
 }
 
 Webcam ::~Webcam()
@@ -112,7 +113,7 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
     //s'il y a assez de pixels binairisé en blanc on calcul la prochaine position du cercle
     if (nbPixels > 300) {
 
-        //if (positionAct.x == -1 || positionAct.y == -1)  -> si le barycentre est hors de l'image on ne change pas sa position
+        // si le barycentre est hors de l'image on ne change pas sa position
         // sinon on change pas à pas la position de l'object vers la position désiriée
         if(abs( positionAct.x - barycentre.x) > 5 ) {
             objectNextStepX = max(5, min (100, abs(positionAct.x - barycentre.x)/2));
@@ -123,7 +124,7 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
             positionAct.y += (-1)* sign(positionAct.y - barycentre.y) * objectNextStepY;
         }
 
-        circle(image, positionAct, 15, CV_RGB(255,0,0), -1);
+        circle(image, positionAct, 10, CV_RGB(255,0,0), -1);
 
     }
 
@@ -148,5 +149,23 @@ void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking
 
 int Webcam :: getNbPixels () {
 	return nbPixels;
+}
+
+int Webcam :: getNbPixelsLocked (Mat imageBinaire) {
+
+    nbPixelsLocked = 0;
+
+    int i=0;
+    int j=0;
+    for(i=220;i<=260;i++){
+    	for(j=300;j<=340;j++){
+            if (imageBinaire.at<unsigned char>(i, j) == 255) {
+                        nbPixelsLocked ++;
+            }
+        }
+    }
+
+    return nbPixelsLocked;
+
 }
 

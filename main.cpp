@@ -8,21 +8,23 @@ int main(int argc, char* argv[]) {
     int device_type = 1;
 
 	// Initialisation variable pour les calculs d'angles
-	float angleCibleLauncher = 0; //angle cible horizontal du lanceur
-	float dw = 0; //distance entre la webcam de gauche et la projection perpendiculaire de l'objet sur la planche
+	float angleCibleLauncherPan = 0; //angle cible horizontal du lanceur
+	float dwg = 0; //distance entre la webcam de gauche et la projection perpendiculaire de l'objet sur la planche
+	float dwd = 0; //distance entre la webcam de droite et la projection perpendiculaire de l'objet sur la planche
 	float dl = 0; //distance entre la projection perpendiculaire de l'objet sur la planche et le lanceur
 	float ang1 = 0; //variable intermédiaire de calcul
-	int angleLauncher = 90; // angle honrizontal du lanceur après initialisation
+	float angleLauncherPan = 90; // angle honrizontal du lanceur après initialisation
+	float angleLauncherTilt = 90; // angle vertical du lanceur après initialisation
 	float ratio; // ratiode différenciation entre le nombre de pixels de l'objet tracké principal et le secondaire
 	float distancePlancheObjet = 0; // distance minimale entre l'objet traqué et la planche
 	float angleCamGauche = 0; // angle pris par la webcam gauche
 	float angleCamDroite = 0; // angle pris par la webcam droite
-	int nbPixels1 = 0; // nb de pixels rouge sur l'image de la webcam 1 (gauche)
-	int nbPixels2 = 0; // nb de pixels rouge sur l'image de la webcam 2 (droite)
+	float tiltCamGauche = 0; // orientation verticale de la webcam gauche
+	int nbPixels1, nbPixels2, nbPixelsLocked1, nbPixelsLocked2 = 0; // nb de pixels rouge sur l'image de la webcam 1 (gauche)
 
 	// Partie Tracking
 	char key=0;
-	int focus1, focus2, locked1, locked2 = 0; // défini quelle webcam traque l'objet prioritaire (le plus gros)
+	int focus1, focus2, locked1, locked2, check = 0; // défini quelle webcam traque l'objet prioritaire (le plus gros)
 	Mat image1, image2;
 	Mat imageBinaire1, imageBinaire2; //images binarisé avec les traitement sur la couleur rouge
 	Mat imageTracking1, imageTracking2; //image de tracking (cible plus zone de vérouillage)
@@ -53,7 +55,6 @@ int main(int argc, char* argv[]) {
     configLauncher(control_main);
     cout << "fin initialisation système"  << endl;
 
-    //pid_t pidLauncher;
 
     while(key!='q' && key!='Q') {
 
@@ -79,32 +80,18 @@ int main(int argc, char* argv[]) {
 
         nbPixels1=maWebcam1->getNbPixels(); // donne le nb de pixels rouges sur le webcam 1
         nbPixels2=maWebcam2->getNbPixels();
-        // calcul de la distance minimale entre l'objet traqué et la planche
-        if( dx1==(-321) && dy1==(241) ){
-        	cout << "tracking 1 manquant" << endl; //pas d'objet rouge à l'image 1
-        }
-        else if( dx2==(-321) && dy2==(241) ){
-        	cout << "tracking 2 manquant" << endl; //pas d'objet rouge à l'image 2
-        }
-        else {
-        	angleCamDroite = 172 - ((pan2.getPosition()-50)*(162.0/3736.0));
-        	angleCamGauche = 3 + (pan1.getPosition()-5)*(160.0/3795.0);
-        	cout << endl << "L'angle de droite est: " << angleCamDroite << endl;
-        	cout << "L'angle de gauche est: " << angleCamGauche << endl;
-        	distancePlancheObjet  = calculDistance(angleCamGauche, angleCamDroite, 50);
-        	cout << "La distance entre le planche et l'objet est : " << distancePlancheObjet << endl;
-        }
+        nbPixelsLocked1=maWebcam1->getNbPixelsLocked(imageBinaire1); // donne le nb de pixels rouges vérouillés sur le webcam 1
+        nbPixelsLocked2=maWebcam2->getNbPixelsLocked(imageBinaire2);
+        cout << "nbPixelsLocked1 = " << nbPixelsLocked1 << endl;
+        cout << "nbPixelsLocked2 = " << nbPixelsLocked2 << endl;
 
 
         //Définition de l'objet traqué prioritaire
         ratio = (float)nbPixels1/nbPixels2;
-        int marge = 20000;
         cout << "nbPixels1 = " << nbPixels1 << " et nbPixels2 = " << nbPixels2 << " et ratio = " << ratio << endl;
-        //if( nbPixels1>nbPixels2+marge){ // permet de réorienter les webcam vers la cible principale
         if( ratio > 3){ // permet de réorienter les webcam vers la cible principale // 1.7
         	focus1 = 1;
         	focus2 = 0;
-        //}else if( nbPixels2>nbPixels1+marge ) {
         }else if( ratio < 0.2 ) { // 0.3
         	focus2 = 1;
         	focus1 = 0;
@@ -118,32 +105,40 @@ int main(int argc, char* argv[]) {
         locked1 = traitementCam(dx1, dy1, pan1, tilt1, focus1, 1, pan1.getPosition(), pan2.getPosition());
         locked2 = traitementCam(dx2, dy2, pan2, tilt2, focus2, 2, pan1.getPosition(), pan2.getPosition());
 
+        //Traitement lance missile
+		if(locked1==1 && locked2==1 && focus1==1 && focus2==1 && nbPixelsLocked1>500 && nbPixelsLocked2>500 ){
 
-		//Traitement lance missile
-		//pidLauncher = fork();
-		//if(pidLauncher == 0){
-			if(locked1==1 && locked2==1 && focus1==1 && focus2==1 ){
-				ang1 = (angleCamGauche/360 )*2*PI;
-				cout << "angle 1 = " << ang1 << endl;
-				dw = distancePlancheObjet/tan(ang1);
-				cout << "dw = " << dw << endl;
-				dl = 25-dw;
-				angleCibleLauncher = atan(distancePlancheObjet/dl)*(180/PI);   // angle  horizontal cible du lance missile pour viser la cible
-				if(angleCibleLauncher < 0){
-					angleCibleLauncher = 180 + angleCibleLauncher;
-				}
-				angleLauncher = state_bruno->angle_h;//get_angleH(); // angle actuel horizontal du lance missile
+			// calcul de la distance minimale entre l'objet traqué et la planche
+	        angleCamDroite = 172 - ((pan2.getPosition()-50)*(162.0/3736.0));
+	        angleCamGauche = 3 + (pan1.getPosition()-5)*(160.0/3795.0);
+	       	tiltCamGauche = 55.0 + (tilt1.getPosition()-1250.0)*(47.0/1050.0);
+	       	cout << endl << "L'angle de droite est: " << angleCamDroite << endl;
+	       	cout << "L'angle de gauche est: " << angleCamGauche << endl;
+	       	distancePlancheObjet  = calculDistance(angleCamGauche, angleCamDroite, 50);
+	       	cout << "La distance entre le planche et l'objet est : " << distancePlancheObjet << endl;
 
-				if (nbPixels1 > 1000 && nbPixels2 > 1000) {
-					cout << "angle cible launcher = " << angleCibleLauncher << " et angle actuel launcher = "<< angleLauncher << endl;
-					traitement(control_main,angleCibleLauncher,angleLauncher);
-					state_bruno->angle_h = angleCibleLauncher;
-				}
-				//exit(EXIT_SUCCESS);
-			 }
-		 //}
+	       	//calcul des angles à envoyer au lance missile
+			ang1 = (angleCamGauche/360 )*2*PI;
+			dwg = distancePlancheObjet/tan(ang1);
+			dl = 25-dwg;
+			dwd=abs(25+dl);
+			angleCibleLauncherPan = atan(distancePlancheObjet/dl)*(180/PI); // angle  horizontal cible du lance missile pour viser la cible
+			if(angleCibleLauncherPan < 0){
+				angleCibleLauncherPan = 180 + angleCibleLauncherPan;
+			}
+			angleLauncherPan = state_bruno->angle_h; // angle actuel horizontal du lance missile
+			angleLauncherTilt = state_bruno->angle_v; // angle actuel vertical du lance missile
 
-         if(waitKey(30) >= 0); // on patient 30 milliseconds avant de passer à l'image suivante
+	        //Vérification des coordonnées de l'objet dans le même repère
+	        check = transformation_control(distancePlancheObjet, dwd, dwg, angleCamGauche, angleCamDroite);
+	        if(check ==1){
+	        	traitement(control_main,angleCibleLauncherPan, angleLauncherPan, tiltCamGauche, angleLauncherTilt);
+	        	state_bruno->angle_h = angleCibleLauncherPan;
+	        	state_bruno->angle_v = tiltCamGauche;
+	        }
+		 }
+
+         if(waitKey(10) >= 0); // on patient 30 milliseconds avant de passer à l'image suivante
 
     }
 

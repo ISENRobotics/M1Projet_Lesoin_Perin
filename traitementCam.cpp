@@ -3,7 +3,7 @@
 int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, int positionCam1, int positionCam2){
     float panAngle=pan.getPosition();
     float tiltAngle=tilt.getPosition();
-    int R = 20; // zone de verrouillage //40
+    int R = 20; // zone de verrouillage
     int correctionX = abs((int)(dx/4)); // correction proportionnelle à l'écart
     int correctionY = abs((int)(dy/4));
 

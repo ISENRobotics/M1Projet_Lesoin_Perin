@@ -17,10 +17,12 @@ class Webcam
         void affiche(Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2);
         Mat binairisation (Mat image);
         int getNbPixels();
+        int getNbPixelsLocked(Mat imageBinaire);
 
     private:
 
         int nbPixels;
+        int nbPixelsLocked;
 };
 
 #endif // WEBCAM_H_INCLUDED

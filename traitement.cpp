@@ -2,34 +2,49 @@
 
 
 
-void traitement(missile_usb * control_traitement,int pos_c, int pos_l){
+void traitement(missile_usb * control_traitement,float angleCibleLauncherPan, float angleLauncherPan, float angleCibleLauncherTilt, float angleLauncherTilt){
 
 
-    int delay =110;        //1000 ou ((11*fabs(p_Dx))+(14*fabs(p_Dy)))/2;
+    int delay = 110;
 
-   // int R = 40;
+    float ecartPan = angleCibleLauncherPan - angleLauncherPan;
+    int mouvPan=ecartPan/2;
+    int nb_inc_pan=abs(mouvPan);
 
-    float ecart=pos_c-pos_l;
-    cout << "ecart = " << ecart << endl;
-    int mouv=ecart/2;
-    int nb_inc=abs(mouv);
-    //cout << "le nb d'incrémentations est : " << nb_inc << endl;
+    float ecartTilt = angleCibleLauncherTilt - angleLauncherTilt;
+    cout << "ecartTilt = " << ecartTilt << endl;
+    int mouvTilt=ecartTilt/2;
+    int nb_inc_tilt=abs(mouvTilt);
+
     int i=0;
 
-    if (ecart<-5) {
+    if (ecartPan<-5) {
     	printf("cible à gauche\n");
-    	for (i=0;i<=nb_inc;i++) {
+    	for (i=0;i<=nb_inc_pan;i++) {
     		action(control_traitement,1,delay);
     	}
     }
-
-    else if (ecart>5) {
+    else if (ecartPan>5) {
         printf("cible à droite\n");
-        for (i=0;i<=nb_inc;i++) {
+        for (i=0;i<=nb_inc_pan;i++) {
         	action(control_traitement,2,delay);
         }
     }
 
+
+
+    if (ecartTilt<-5) {
+    	printf("cible en haut\n");
+    	for (i=0;i<=nb_inc_tilt;i++) {
+    		action(control_traitement,4,delay); //
+    	}
+    }
+    else if (ecartTilt>5) {
+        printf("cible en bas\n");
+        for (i=0;i<=nb_inc_tilt;i++) {
+        	action(control_traitement,3,delay); //
+        }
+    }
 	else {
 		action(control_traitement,10,delay);
         printf("Cible vérouillée par le lance missile \n  ");

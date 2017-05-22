@@ -14,12 +14,12 @@ void configLauncher (missile_usb * control_device) {
 	}
 
 	for (k=0;k<35;k++) {
-		action(control_device,3,95);
+		action(control_device,4,95);
 		cout << k << endl;
 	}
 
 	for (l=0;l<25;l++) {
-		action(control_device,4,95);
+		action(control_device,3,95);
 		cout << l << endl;
 	}
 

@@ -10,15 +10,15 @@
 
 state_launcher::state_launcher() {
 	angle_h=90;
-	angle_v=0;
+	angle_v=90;
 }
 
 state_launcher::~state_launcher() {
 	}
 
-void state_launcher :: update_state(float new_ah) { // float new_av){
+void state_launcher :: update_state(float new_ah, float new_av){
 	angle_h=new_ah;
-	//angle_v=new_av;
+	angle_v=new_av;
 }
 
 int state_launcher :: get_angleV (){

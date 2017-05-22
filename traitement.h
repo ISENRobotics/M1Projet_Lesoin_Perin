@@ -1,1 +1,1 @@
-void traitement(missile_usb * control,int p_Dx, int p_Dy);
+void traitement(missile_usb * control_traitement,float angleCibleLauncherPan, float angleLauncherPan, float angleCibleLauncherTilt, float angleLauncherTilt);
