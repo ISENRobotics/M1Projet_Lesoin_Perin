@@ -18,7 +18,7 @@ using namespace boost;
 
 int transformation_control (float distance_objet,float distance_WD, float distance_WG, float angle_gauche, float angle_droite) {
 
-	int l,j,k,z,y;
+	int l,j,k,z,y=0;
 	float R[4][4]={0}; //matrice de transformation tot (produit des T[i])
 	float T[4][4]={0}; //matrice de denavit
 	float M[4][4]={0};
@@ -180,16 +180,21 @@ int transformation_control (float distance_objet,float distance_WD, float distan
 		//printf("MATRICE R FINAL\n%f       %f       %f       %f\n%f         %f         %f       %f\n%f         %f         %f       %f\n%f         %f         %f       %f\n",R[0][0],R[0][1],R[0][2],R[0][3],R[1][0],R[1][1],R[1][2],R[1][3],R[2][0],R[2][1],R[2][2],R[2][3],R[3][0],R[3][1],R[3][2],R[3][3]);
 
 	int check = 0;
-	for (y=0;y<4;y++){
+
+	for (y=0;y<4;y++) {
 		printf("Od[%d]=%f    Og[%d]=%f \n",y,Od[y],y,Og[y]);
-		if ( Od[y]<=(Og[y]+5) && Od[y]>=(Og[y]-5) ){
-			check = 1;
-		}
-		else{
-			check = 0;
-		}
 	}
 
+	float a = Og[0]-Od[0];
+	float b = Og[1]-Od[1];
+
+	if ( (-3 < a) && (a < 3) ){
+
+		if ( (-3 < b) && (b < 3) ) {
+				check = 1;
+				printf("yes\n");
+			}
+		}
 
    return check;
 

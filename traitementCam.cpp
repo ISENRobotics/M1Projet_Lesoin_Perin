@@ -1,6 +1,6 @@
 #include "commun.h"
 
-int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, int positionCam1, int positionCam2){
+int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, int panCam1, int panCam2, int tiltCam1, int tiltCam2){
     float panAngle=pan.getPosition();
     float tiltAngle=tilt.getPosition();
     int R = 20; // zone de verrouillage
@@ -39,20 +39,20 @@ int traitementCam(int dx, int dy, Servo pan, Servo tilt, int focus, int numCam, 
 		}
 
     }else if(focus == 0){ //objet tracké non prioritaire
-    	if( numCam==1 && positionCam2<2000 ){
-    		pan.setAngle(positionCam2-700); // 45 degrés à gauche
-    		tilt.setAngle(2000); //1700
+    	if( numCam==1 && panCam2<2000 ){
+    		pan.setAngle(panCam2-500); // 45 degrés à gauche
+    		tilt.setAngle(2000); //2000
     		return 0;
     	}else if( (numCam==1) ){
-    	    pan.setAngle(positionCam2-700); // 45 degrés à droite
+    	    pan.setAngle(panCam2-500); // 45 degrés à droite
     	    tilt.setAngle(2000);
     	    return 0;
-    	}else if( numCam==2 && positionCam1<2000 ){
-    		pan.setAngle(positionCam1+700); // 45 degrés à gauche
-    		tilt.setAngle(1800); //1500
+    	}else if( numCam==2 && panCam1<2000 ){
+    		pan.setAngle(panCam1+500); // 45 degrés à gauche
+    		tilt.setAngle(1800); //1800
     		return 0;
     	}else if( (numCam==2) ){
-    		pan.setAngle(positionCam1+700); // 45 degrés à droite
+    		pan.setAngle(panCam1+500); // 45 degrés à droite
         	tilt.setAngle(1800);
         	return 0;
     	}

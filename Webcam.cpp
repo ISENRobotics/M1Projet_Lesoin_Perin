@@ -35,11 +35,19 @@ VideoCapture Webcam:: initFlux(int device) {
 
 Mat Webcam :: binairisation (Mat image) {
 
-	int h = 170; // de 160 à 180
-	int s = 175; // de 100 à 255
-    //int v = 0;  non pris en compte pour palier aux variations de luminosité
-	int ds = 75;
-	int dh = 10;
+	int h = 175; // de 160 à 180
+	int s = 195; // de 100 à 255
+    int v = 195;
+	int ds = 60;
+	int dh = 15;
+	int dv = 60;
+	double alpha=1; /**< Simple contrast control */
+	int beta=-60;  /**< Simple brightness control */
+	int i, j, x, y, c = 0;
+
+	/// Do the operation new_image(i,j) = alpha*image(i,j) + beta
+	//image.convertTo(image,-1,alpha,beta);
+
 
 	Mat hsv;
 	vector<Mat> planes;
@@ -54,13 +62,13 @@ Mat Webcam :: binairisation (Mat image) {
 
 	int largeur = imgH.cols;
 	int hauteur = imgH.rows;
-	int i=0;
-	int j=0;
+
 	for(i=0;i<(hauteur);i++){
 		for(j=0;j<(largeur);j++){
 			int pixelH = imgH.at<unsigned char>(i, j);
 			int pixelS = imgS.at<unsigned char>(i, j);
-			if( (h-dh)<pixelH && pixelH<(h+dh) && (s-ds)<pixelS && pixelS<(s+ds) ){
+			int pixelV = imgV.at<unsigned char>(i, j);
+			if( (h-dh)<pixelH && pixelH<(h+dh) && (s-ds-10)<pixelS && pixelS<(s+ds) && (v-dv)<pixelV && pixelV<(v+dv) ){
 				mask.at<unsigned char>(i, j) = 255;
 			} else {
 				mask.at<unsigned char>(i, j) = 0;
@@ -139,19 +147,19 @@ Mat Webcam :: tracking(CvPoint barycentre, Mat image) {
 }
 
 
-void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2, int focus1, int focus2, int locked1, int locked2, int nbPixelsLocked1, int nbPixelsLocked2) {
-	if(locked1==1 && focus1==1 && nbPixelsLocked1>500){
+void Webcam :: affiche (Mat imageTracking1, Mat imageBinaire1, Mat imageTracking2, Mat imageBinaire2, int focus1, int focus2, int locked1, int locked2, int nbPixelsLocked1, int nbPixelsLocked2, int check) {
+	if(locked1==1 && focus1==1 && nbPixelsLocked1>200 && check==1){
 		putText(imageTracking1, "Fire !!!", cvPoint(280,60),   FONT_HERSHEY_DUPLEX, 1, cvScalar(0,0,255), 1);
 		rectangle(imageTracking1, cvPoint(300,220), cvPoint(340,260), cvScalar(0,0,255), 5, 4);
 	}
-	if(locked2==1 && focus2==1 && nbPixelsLocked2>500){
+	if(locked2==1 && focus2==1 && nbPixelsLocked2>200 && check==1){
 		putText(imageTracking2, "Fire !!!", cvPoint(280,60),   FONT_HERSHEY_DUPLEX, 1, cvScalar(0,0,255), 1);
 		rectangle(imageTracking2, cvPoint(300,220), cvPoint(340,260), cvScalar(0,0,255), 5, 4);
 	}
 	imshow("Image tracking 1", imageTracking1); // affichage de l'image avec le tracking
 	imshow("Image tracking 2", imageTracking2); // affichage de l'image avec le tracking
-	//imshow("Image binaire 1", imageBinaire1); // affichage de l'image de la binairisation
-	//imshow("Image binaire 2", imageBinaire2); // affichage de l'image de la binairisation
+	imshow("Image binaire 1", imageBinaire1); // affichage de l'image de la binairisation
+	imshow("Image binaire 2", imageBinaire2); // affichage de l'image de la binairisation
 
 }
 

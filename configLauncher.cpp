@@ -18,7 +18,7 @@ void configLauncher (missile_usb * control_device) {
 		cout << k << endl;
 	}
 
-	for (l=0;l<25;l++) {
+	for (l=0;l<18;l++) { //25
 		action(control_device,3,95);
 		cout << l << endl;
 	}

@@ -14,12 +14,12 @@ int main(int argc, char* argv[]) {
 	float dl = 0; //distance entre la projection perpendiculaire de l'objet sur la planche et le lanceur
 	float ang1 = 0; //variable intermédiaire de calcul
 	float angleLauncherPan = 90; // angle honrizontal du lanceur après initialisation
-	float angleLauncherTilt = 90; // angle vertical du lanceur après initialisation
+	float angleLauncherTilt = 75; // angle vertical du lanceur après initialisation
 	float ratio; // ratiode différenciation entre le nombre de pixels de l'objet tracké principal et le secondaire
 	float distancePlancheObjet = 0; // distance minimale entre l'objet traqué et la planche
 	float angleCamGauche = 0; // angle pris par la webcam gauche
 	float angleCamDroite = 0; // angle pris par la webcam droite
-	float tiltCamGauche = 0; // orientation verticale de la webcam gauche
+	float tiltCamGauche,tiltCamDroite = 0; // orientation verticale de la webcam gauche et droite
 	int nbPixels1, nbPixels2, nbPixelsLocked1, nbPixelsLocked2 = 0; // nb de pixels rouge sur l'image de la webcam 1 (gauche)
 
 	// Partie Tracking
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 	Servo tilt1(&driver, 3);
 	tilt1.configuration(2000);
 	Servo pan2(&driver, 0);
-	pan2.configuration(2000);
+	pan2.configuration(1800);
 	Servo tilt2(&driver, 1);
 	tilt2.configuration(1800);
 	cout << "fin initialisation servos" << endl;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
         imageTracking2 = maWebcam2->tracking(positionObj2, image2); //affiche un point rouge sur la cible
 
         //Affichage des fenetres :
-        maWebcam1->affiche(imageTracking1, imageBinaire1, imageTracking2, imageBinaire2, focus1, focus2, locked1, locked2, nbPixelsLocked1, nbPixelsLocked2);
+        maWebcam1->affiche(imageTracking1, imageBinaire1, imageTracking2, imageBinaire2, focus1, focus2, locked1, locked2, nbPixelsLocked1, nbPixelsLocked2, check);
 
         // Calcul des écarts entre le centre des images des webcams et les barycentres en x et y (l'origine des pixel est en haut à gauche)
         dx1=positionObj1.x - 320;
@@ -85,14 +85,13 @@ int main(int argc, char* argv[]) {
         cout << "nbPixelsLocked1 = " << nbPixelsLocked1 << endl;
         cout << "nbPixelsLocked2 = " << nbPixelsLocked2 << endl;
 
-
         //Définition de l'objet traqué prioritaire
         ratio = (float)nbPixels1/nbPixels2;
         cout << "nbPixels1 = " << nbPixels1 << " et nbPixels2 = " << nbPixels2 << " et ratio = " << ratio << endl;
-        if( ratio > 3.8){ // permet de réorienter les webcam vers la cible principale // 3
+        if( ratio > 2){ // permet de réorienter les webcam vers la cible principale // 3.8
         	focus1 = 1;
         	focus2 = 0;
-        }else if( ratio < 0.2 ) { // 0.3
+        }else if( ratio < 0.5 ) { // 0.3
         	focus2 = 1;
         	focus1 = 0;
         }
@@ -102,20 +101,25 @@ int main(int argc, char* argv[]) {
         }
 
         //Commande des servos à partir du tracking des webcams
-        locked1 = traitementCam(dx1, dy1, pan1, tilt1, focus1, 1, pan1.getPosition(), pan2.getPosition());
-        locked2 = traitementCam(dx2, dy2, pan2, tilt2, focus2, 2, pan1.getPosition(), pan2.getPosition());
+        locked1 = traitementCam(dx1, dy1, pan1, tilt1, focus1, 1, pan1.getPosition(), pan2.getPosition(), tilt1.getPosition(), tilt2.getPosition());
+        locked2 = traitementCam(dx2, dy2, pan2, tilt2, focus2, 2, pan1.getPosition(), pan2.getPosition(), tilt1.getPosition(), tilt2.getPosition());
+
+		// calcul de la distance minimale entre l'objet traqué et la planche
+        angleCamDroite = 160.0 - ((pan2.getPosition()-64.0)*(135.0/3216.0));
+        angleCamGauche = 5.0 + (pan1.getPosition()-64.0)*(140.0/3216.0);
+       	tiltCamGauche = 5.0 + (tilt1.getPosition()-64.0)*(140.0/3216.0);
+       	tiltCamDroite = 15.0 + (tilt1.getPosition()-64.0)*(143.0/3216.0);
+       	cout << endl << "L'angle de droite est: " << angleCamDroite << endl;
+       	cout << "L'angle de gauche est: " << angleCamGauche << endl;
+       	distancePlancheObjet  = calculDistance(angleCamGauche, angleCamDroite, 50);
+       	cout << "La distance entre le planche et l'objet est : " << distancePlancheObjet << endl;
+
+        //Vérification des coordonnées de l'objet dans le même repère
+        check = transformation_control(distancePlancheObjet, dwd, dwg, angleCamGauche, angleCamDroite);
 
         //Traitement lance missile
-		if(locked1==1 && locked2==1 && focus1==1 && focus2==1 && nbPixelsLocked1>500 && nbPixelsLocked2>500 ){
+		if(locked1==1 && locked2==1 && focus1==1 && focus2==1 && nbPixelsLocked1>200 && nbPixelsLocked2>200 ){
 
-			// calcul de la distance minimale entre l'objet traqué et la planche
-	        angleCamDroite = 172 - ((pan2.getPosition()-50)*(162.0/3736.0));
-	        angleCamGauche = 3 + (pan1.getPosition()-5)*(160.0/3795.0);
-	       	tiltCamGauche = 55.0 + (tilt1.getPosition()-1250.0)*(47.0/1050.0);
-	       	cout << endl << "L'angle de droite est: " << angleCamDroite << endl;
-	       	cout << "L'angle de gauche est: " << angleCamGauche << endl;
-	       	distancePlancheObjet  = calculDistance(angleCamGauche, angleCamDroite, 50);
-	       	cout << "La distance entre le planche et l'objet est : " << distancePlancheObjet << endl;
 
 	       	//calcul des angles à envoyer au lance missile
 			ang1 = (angleCamGauche/360 )*2*PI;
@@ -129,9 +133,8 @@ int main(int argc, char* argv[]) {
 			angleLauncherPan = state_bruno->angle_h; // angle actuel horizontal du lance missile
 			angleLauncherTilt = state_bruno->angle_v; // angle actuel vertical du lance missile
 
-	        //Vérification des coordonnées de l'objet dans le même repère
-	        check = transformation_control(distancePlancheObjet, dwd, dwg, angleCamGauche, angleCamDroite);
 	        if(check ==1){
+	        	printf("check = %d\n",check);
 	        	traitement(control_main,angleCibleLauncherPan, angleLauncherPan, tiltCamGauche, angleLauncherTilt);
 	        	state_bruno->angle_h = angleCibleLauncherPan;
 	        	state_bruno->angle_v = tiltCamGauche;

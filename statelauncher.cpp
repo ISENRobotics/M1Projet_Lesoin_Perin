@@ -10,7 +10,7 @@
 
 state_launcher::state_launcher() {
 	angle_h=90;
-	angle_v=90;
+	angle_v=75; //90
 }
 
 state_launcher::~state_launcher() {

@@ -177,8 +177,8 @@ using namespace std;
     }
 
     void Servo::configuration(int angle){
-    	min_angle = 64 ;
-    	max_angle = 3280;
+    	min_angle = 64 ; //0
+    	max_angle = 3280; //180
     	min_ms = 800;
     	max_ms = 2200;
     	driver->setSpeed(channel, 0);
