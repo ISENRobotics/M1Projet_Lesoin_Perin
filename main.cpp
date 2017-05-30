@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
     Webcam * maWebcam2 = new Webcam();
     fluxVideo2 = maWebcam2->initFlux(1);
     missile_usb * control_main=init(device_type);
-    state_launcher * state_bruno = new state_launcher();
+    state_launcher * state_missileLauncher = new state_launcher();
     configLauncher(control_main);
     cout << "fin initialisation système"  << endl;
 
@@ -88,10 +88,10 @@ int main(int argc, char* argv[]) {
         //Définition de l'objet traqué prioritaire
         ratio = (float)nbPixels1/nbPixels2;
         cout << "nbPixels1 = " << nbPixels1 << " et nbPixels2 = " << nbPixels2 << " et ratio = " << ratio << endl;
-        if( ratio > 2){ // permet de réorienter les webcam vers la cible principale // 3.8
+        if( ratio > 3){ // permet de réorienter les webcam vers la cible principale // 3.8
         	focus1 = 1;
         	focus2 = 0;
-        }else if( ratio < 0.5 ) { // 0.3
+        }else if( ratio < 0.4 ) { // 0.3
         	focus2 = 1;
         	focus1 = 0;
         }
@@ -130,14 +130,14 @@ int main(int argc, char* argv[]) {
 			if(angleCibleLauncherPan < 0){
 				angleCibleLauncherPan = 180 + angleCibleLauncherPan;
 			}
-			angleLauncherPan = state_bruno->angle_h; // angle actuel horizontal du lance missile
-			angleLauncherTilt = state_bruno->angle_v; // angle actuel vertical du lance missile
+			angleLauncherPan = state_missileLauncher->angle_h; // angle actuel horizontal du lance missile
+			angleLauncherTilt = state_missileLauncher->angle_v; // angle actuel vertical du lance missile
 
 	        if(check ==1){
 	        	printf("check = %d\n",check);
 	        	traitement(control_main,angleCibleLauncherPan, angleLauncherPan, tiltCamGauche, angleLauncherTilt);
-	        	state_bruno->angle_h = angleCibleLauncherPan;
-	        	state_bruno->angle_v = tiltCamGauche;
+	        	state_missileLauncher->angle_h = angleCibleLauncherPan;
+	        	state_missileLauncher->angle_v = tiltCamGauche;
 	        }
 		 }
 

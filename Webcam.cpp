@@ -36,11 +36,11 @@ VideoCapture Webcam:: initFlux(int device) {
 Mat Webcam :: binairisation (Mat image) {
 
 	int h = 175; // de 160 à 180
-	int s = 195; // de 100 à 255
-    int v = 195;
-	int ds = 60;
+	int s = 165; // de 100 à 255
+    int v = 165;
+	int ds = 90;
 	int dh = 15;
-	int dv = 60;
+	int dv = 90;
 	double alpha=1; /**< Simple contrast control */
 	int beta=-60;  /**< Simple brightness control */
 	int i, j, x, y, c = 0;

@@ -5,7 +5,7 @@
 void traitement(missile_usb * control_traitement,float angleCibleLauncherPan, float angleLauncherPan, float angleCibleLauncherTilt, float angleLauncherTilt){
 
 
-    int delay = 90; //110
+    int delay = 70; //110
 
     float ecartPan = angleCibleLauncherPan - angleLauncherPan;
     int mouvPan=ecartPan/2;
